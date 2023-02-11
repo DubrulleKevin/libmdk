@@ -132,34 +132,29 @@ mdk_error mdk_string_split(mdk_string string, const char* separator, mdk_list li
         it = strstr(prev, separator);
         if (it) {
             diff = it - prev;
-            tmp = malloc(diff + 1);
-            if (!tmp) {
-                rs = MDK_ERROR_MALLOC;
-                goto ret;
-            }
-            for (i = 0; i < diff; i++) {
-                tmp[i] = prev[i];
-            }
-            tmp[i] = '\0';
-            mdk_string_new_from_c_string(&tmp_string, tmp);
-            free(tmp);
-            mdk_list_append(list, tmp_string);
-            prev = it + strlen(separator);
         }
         else if (prev != string->c_string) {
             diff = string->c_string + strlen(string->c_string) - prev;
-            tmp = malloc(diff + 1);
-            if (!tmp) {
-                rs = MDK_ERROR_MALLOC;
-                goto ret;
-            }
-            for (i = 0; i < diff; i++) {
-                tmp[i] = prev[i];
-            }
-            tmp[i] = '\0';
-            mdk_string_new_from_c_string(&tmp_string, tmp);
-            free(tmp);
-            mdk_list_append(list, tmp_string);
+        }
+        else {
+            break;
+        }
+        
+        tmp = malloc(diff + 1);
+        if (!tmp) {
+            rs = MDK_ERROR_MALLOC;
+            goto ret;
+        }
+        for (i = 0; i < diff; i++) {
+            tmp[i] = prev[i];
+        }
+        tmp[i] = '\0';
+        mdk_string_new_from_c_string(&tmp_string, tmp);
+        free(tmp);
+        mdk_list_append(list, tmp_string);
+
+        if (it) {
+            prev = it + strlen(separator);
         }
     } while (it);
 
