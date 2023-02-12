@@ -161,3 +161,25 @@ mdk_error mdk_string_split(mdk_string string, const char* separator, mdk_list li
 ret:
     return rs;
 }
+
+mdk_error mdk_string_append(mdk_string dst, const mdk_string src) {
+    return mdk_string_append_c_string(dst, src->c_string);
+}
+
+mdk_error mdk_string_append_c_string(mdk_string dst, const char* src) {
+    mdk_error rs = MDK_ERROR_OK;
+    char* tmp_dst = NULL;
+
+    tmp_dst = realloc(dst->c_string, strlen(dst->c_string) + strlen(src) + 1);
+    if (!tmp_dst) {
+        rs = MDK_ERROR_MALLOC;
+        goto ret;
+    }
+
+    dst->c_string = tmp_dst;
+
+    strcat(dst->c_string, src);
+
+ret:
+    return rs;
+}

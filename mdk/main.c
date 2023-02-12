@@ -20,7 +20,7 @@ int main(void)
 {
     int rs = EXIT_SUCCESS;
     mdk_error err;
-    mdk_string string, tmp2;
+    mdk_string string, string2, tmp2;
     mdk_list list;
     size_t i, length;
     void* tmp = NULL;
@@ -28,9 +28,11 @@ int main(void)
 
     W(mdk_list_new(&list));
 
-    W(mdk_string_new_from_c_string(&string, "Hello my dear!"));
+    W(mdk_string_new_from_c_string(&string, "Hello my "));
+    W(mdk_string_new_from_c_string(&string2, "dear!"));
+    W(mdk_string_append(string, string2));
     
-    W(mdk_string_split(string, "dear", list));
+    W(mdk_string_split(string, " ", list));
 
     W(mdk_list_length(list, &length));
     for (i = 0; i < length; i++) {
@@ -42,6 +44,7 @@ int main(void)
     }
 
     W(mdk_string_delete(&string));
+    W(mdk_string_delete(&string2));
     W(mdk_list_delete(&list));
 
 ret:
