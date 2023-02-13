@@ -7,7 +7,7 @@
 #include "mdk_error.h"
 
 
-LIBMDK_API typedef struct mdk_internal_list* mdk_list;
+typedef struct mdk_internal_list* mdk_list;
 
 
 LIBMDK_API mdk_list mdk_list_new(mdk_error* errorPtr);

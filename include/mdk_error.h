@@ -7,7 +7,7 @@
 #include "mdk_config.h"
 
 
-LIBMDK_API typedef enum {
+typedef enum {
 	MDK_ERROR_OK,
 	MDK_ERROR_INVALID_PTR,
 	MDK_ERROR_MALLOC,

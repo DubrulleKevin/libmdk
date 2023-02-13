@@ -9,7 +9,7 @@
 #include "mdk_config.h"
 
 
-LIBMDK_API typedef struct mdk_internal_string* mdk_string;
+typedef struct mdk_internal_string* mdk_string;
 
 
 LIBMDK_API mdk_string mdk_string_new(mdk_error* errorPtr);

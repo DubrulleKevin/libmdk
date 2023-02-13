@@ -8,11 +8,13 @@ struct mdk_internal_list {
 
 
 mdk_list mdk_list_new(mdk_error* errorPtr) {
+    mdk_list list;
+
     if (errorPtr) {
         *errorPtr = MDK_ERROR_OK;
     }
 
-    mdk_list list = malloc(sizeof(struct mdk_internal_list));
+    list = malloc(sizeof(struct mdk_internal_list));
     if (!list) {
         if (errorPtr) {
             *errorPtr = MDK_ERROR_MALLOC;

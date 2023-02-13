@@ -7,10 +7,13 @@ struct mdk_internal_string {
 
 
 mdk_string mdk_string_new(mdk_error* errorPtr) {
+    mdk_string string;
+
     if (errorPtr) {
         *errorPtr = MDK_ERROR_OK;
     }
-    mdk_string string = malloc(sizeof(struct mdk_internal_string));
+
+    string = malloc(sizeof(struct mdk_internal_string));
     if (!string) {
         if (errorPtr) {
             *errorPtr = MDK_ERROR_MALLOC;
