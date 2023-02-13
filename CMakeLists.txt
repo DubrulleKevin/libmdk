@@ -3,14 +3,14 @@ project(libmdk VERSION 0.0.1 DESCRIPTION "C89 library providing helper structure
 
 set (CMAKE_C_STANDARD 90)
 
-# Enable debug symbols by default
 if(CMAKE_BUILD_TYPE STREQUAL "")
   set(CMAKE_BUILD_TYPE Release)
 endif()
-# (you can also set it on the command line: -D CMAKE_BUILD_TYPE=Release)
 
 if (MSVC)
     add_compile_options(/W4)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+    string(REGEX REPLACE "/W3" "" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}") # CMake always add /W3 to MSVC
 else()
     add_compile_options(-Wall -Wextra -pedantic)
 endif()

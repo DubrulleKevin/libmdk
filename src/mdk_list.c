@@ -14,7 +14,7 @@ mdk_list mdk_list_new(mdk_error* errorPtr) {
         *errorPtr = MDK_ERROR_OK;
     }
 
-    list = malloc(sizeof(struct mdk_internal_list));
+    list = (mdk_list)malloc(sizeof(struct mdk_internal_list));
     if (!list) {
         if (errorPtr) {
             *errorPtr = MDK_ERROR_MALLOC;
@@ -155,7 +155,7 @@ ret:
 }
 
 size_t mdk_list_length(mdk_list list, mdk_error* errorPtr) {
-    size_t length = -1;
+    size_t length = 0;
     
     if (errorPtr) {
         *errorPtr = MDK_ERROR_OK;

@@ -13,7 +13,7 @@ mdk_string mdk_string_new(mdk_error* errorPtr) {
         *errorPtr = MDK_ERROR_OK;
     }
 
-    string = malloc(sizeof(struct mdk_internal_string));
+    string = (mdk_string)malloc(sizeof(struct mdk_internal_string));
     if (!string) {
         if (errorPtr) {
             *errorPtr = MDK_ERROR_MALLOC;
@@ -62,7 +62,7 @@ void mdk_string_delete(mdk_string* stringPtr, mdk_error* errorPtr) {
 }
 
 size_t mdk_string_length(mdk_string string, mdk_error* errorPtr) {
-    size_t length = -1;
+    size_t length = 0;
 
     if (errorPtr) {
         *errorPtr = MDK_ERROR_OK;
