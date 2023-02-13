@@ -12,7 +12,7 @@
     }
 
 #define W(func) \
-    err = func; \
+    func; \
     PRINT_TO_STDERR_AND_EXIT_ON_MDK_FAILURE(err);
 
 
@@ -24,28 +24,26 @@ int main(void)
     mdk_list list;
     size_t i, length;
     void* tmp = NULL;
-    char* tmp_str = NULL;
+    char* tmp_str;
 
-    W(mdk_list_new(&list));
+    string = W(mdk_string_new_from_c_string("Hello my ", &err));
+    string2 = W(mdk_string_new_from_c_string("dear!", &err));
+    W(mdk_string_append(string, string2, &err));
+    list = W(mdk_string_split(string, " ", &err));
 
-    W(mdk_string_new_from_c_string(&string, "Hello my "));
-    W(mdk_string_new_from_c_string(&string2, "dear!"));
-    W(mdk_string_append(string, string2));
+    length = W(mdk_list_length(list, &err));
     
-    W(mdk_string_split(string, " ", list));
-
-    W(mdk_list_length(list, &length));
     for (i = 0; i < length; i++) {
-        W(mdk_list_get(list, i, &tmp));
+        tmp = W(mdk_list_get(list, i, &err));
         tmp2 = (mdk_string)tmp;
-        W(mdk_string_get(tmp2, &tmp_str));
+        tmp_str = W(mdk_string_get(tmp2, &err));
         puts(tmp_str);
-        W(mdk_string_delete(&tmp2));
+        W(mdk_string_delete(&tmp2, &err));
     }
 
-    W(mdk_string_delete(&string));
-    W(mdk_string_delete(&string2));
-    W(mdk_list_delete(&list));
+    W(mdk_string_delete(&string, &err));
+    W(mdk_string_delete(&string2, &err));
+    W(mdk_list_delete(&list, &err));
 
 ret:
 

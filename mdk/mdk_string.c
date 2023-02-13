@@ -6,39 +6,43 @@ struct mdk_internal_string {
 };
 
 
-mdk_error mdk_string_new(mdk_string* stringPtr) {
-    mdk_error rs = MDK_ERROR_OK;
+mdk_string mdk_string_new(mdk_error* errorPtr) {
+    if (errorPtr) {
+        *errorPtr = MDK_ERROR_OK;
+    }
     mdk_string string = malloc(sizeof(struct mdk_internal_string));
     if (!string) {
-        rs = MDK_ERROR_MALLOC;
+        if (errorPtr) {
+            *errorPtr = MDK_ERROR_MALLOC;
+        }
         goto ret;
     }
 
     string->c_string = NULL;
 
-    *stringPtr = string;
-
 ret:
-    return rs;
+    return string;
 }
 
-mdk_error mdk_string_new_from_c_string(mdk_string* stringPtr, const char* c_string) {
-    mdk_error rs = mdk_string_new(stringPtr);
-    if (rs != MDK_ERROR_OK) {
+mdk_string mdk_string_new_from_c_string(const char* c_string, mdk_error* errorPtr) {
+    mdk_string string = mdk_string_new(errorPtr);
+    if (errorPtr && *errorPtr != MDK_ERROR_OK) {
         goto ret;
     }
     
-    rs = mdk_string_set(*stringPtr, c_string);
-    if (rs != MDK_ERROR_OK) {
+    mdk_string_set(string, c_string, errorPtr);
+    if (errorPtr && *errorPtr != MDK_ERROR_OK) {
         goto ret;
     }
 
 ret:
-    return rs;
+    return string;
 }
 
-mdk_error mdk_string_delete(mdk_string* stringPtr) {
-    mdk_error rs = MDK_ERROR_OK;
+void mdk_string_delete(mdk_string* stringPtr, mdk_error* errorPtr) {
+    if (errorPtr) {
+        *errorPtr = MDK_ERROR_OK;
+    }
 
     if (stringPtr && *stringPtr) {
         if ((*stringPtr)->c_string) {
@@ -48,85 +52,117 @@ mdk_error mdk_string_delete(mdk_string* stringPtr) {
         *stringPtr = NULL;
     }
     else {
-        rs = MDK_ERROR_INVALID_PTR;
+        if (errorPtr) {
+            *errorPtr = MDK_ERROR_INVALID_PTR;
+        }
     }
-
-    return rs;
 }
 
-mdk_error mdk_string_length(mdk_string string, size_t* lengthPtr) {
-    mdk_error rs = MDK_ERROR_OK;
+size_t mdk_string_length(mdk_string string, mdk_error* errorPtr) {
+    size_t length = -1;
+
+    if (errorPtr) {
+        *errorPtr = MDK_ERROR_OK;
+    }
 
     if (!string) {
-        rs = MDK_ERROR_INVALID_PTR;
+        if (errorPtr) {
+            *errorPtr = MDK_ERROR_INVALID_PTR;
+        }
         goto ret;
     }
 
     if (!string->c_string) {
-        *lengthPtr = 0;
+        length = 0;
     }
     else {
-        *lengthPtr = strlen(string->c_string);
+        length = strlen(string->c_string);
     }
 
 ret:
-    return rs;
+    return length;
 }
 
-mdk_error mdk_string_set(mdk_string string, const char* c_string) {
-    mdk_error rs = MDK_ERROR_OK;
-    char* working_c_string;
+void mdk_string_set(mdk_string string, const char* c_string, mdk_error* errorPtr) {
+    char* realloc_c_string;
+
+    if (errorPtr) {
+        *errorPtr = MDK_ERROR_OK;
+    }
 
     if (!string || !c_string) {
-        rs = MDK_ERROR_INVALID_PTR;
+        if (errorPtr) {
+            *errorPtr = MDK_ERROR_INVALID_PTR;
+        }
         goto ret;
     }
 
-    working_c_string = realloc(string->c_string, strlen(c_string) + 1);
-    if (!working_c_string) {
-        rs = MDK_ERROR_MALLOC;
+    realloc_c_string = realloc(string->c_string, strlen(c_string) + 1);
+    if (!realloc_c_string) {
+        if (errorPtr) {
+            *errorPtr = MDK_ERROR_MALLOC;
+        }
         goto ret;
     }
 
-    string->c_string = working_c_string;
+    string->c_string = realloc_c_string;
     
     strcpy(string->c_string, c_string);
 
 ret:
-    return rs;
+    return;
 }
 
-mdk_error mdk_string_get(mdk_string string, char** c_string) {
-    mdk_error rs = MDK_ERROR_OK;
+char* mdk_string_get(mdk_string string, mdk_error* errorPtr) {
+    char* c_string = NULL;
+    
+    if (errorPtr) {
+        *errorPtr = MDK_ERROR_OK;
+    }
 
     if (!string) {
-        rs = MDK_ERROR_INVALID_PTR;
+        if (errorPtr) {
+            *errorPtr = MDK_ERROR_INVALID_PTR;
+        }
         goto ret;
     }
 
-    *c_string = string->c_string;
+    c_string = string->c_string;
 
 ret:
-    return rs;
+    return c_string;
 }
 
-mdk_error mdk_string_split(mdk_string string, const char* separator, mdk_list list) {
-    mdk_error rs = MDK_ERROR_OK;
+mdk_list mdk_string_split(mdk_string string, const char* separator, mdk_error* errorPtr) {
     mdk_string tmp_string;
+    mdk_list list = NULL;
     char *it, *prev, *tmp;
     size_t diff, i;
 
-    if (!string || !separator || !list) {
-        rs = MDK_ERROR_INVALID_PTR;
+    if (errorPtr) {
+        *errorPtr = MDK_ERROR_OK;
+    }
+
+    if (!string || !separator) {
+        if (errorPtr) {
+            *errorPtr = MDK_ERROR_INVALID_PTR;
+        }
         goto ret;
     }
 
     if (!strcmp(separator, "")) {
-        rs = MDK_ERROR_INVALID_SEPARATOR;
+        if (errorPtr) {
+            *errorPtr = MDK_ERROR_INVALID_SEPARATOR;
+        }
         goto ret;
     }
     
     prev = string->c_string;
+
+    list = mdk_list_new(errorPtr);
+    if (errorPtr && *errorPtr != MDK_ERROR_OK) {
+        goto ret;
+    }
 
     do {
         it = strstr(prev, separator);
@@ -142,37 +178,52 @@ mdk_error mdk_string_split(mdk_string string, const char* separator, mdk_list li
         
         tmp = malloc(diff + 1);
         if (!tmp) {
-            rs = MDK_ERROR_MALLOC;
+            if (errorPtr) {
+                *errorPtr = MDK_ERROR_MALLOC;
+            }
             goto ret;
         }
         for (i = 0; i < diff; i++) {
             tmp[i] = prev[i];
         }
         tmp[i] = '\0';
-        mdk_string_new_from_c_string(&tmp_string, tmp);
+        tmp_string = mdk_string_new_from_c_string(tmp, errorPtr);
         free(tmp);
-        mdk_list_append(list, tmp_string);
+        if (errorPtr && *errorPtr != MDK_ERROR_OK) {
+            mdk_string_delete(&tmp_string, errorPtr);
+            goto ret;
+        }
+        mdk_list_append(list, tmp_string, errorPtr);
+        if (errorPtr && *errorPtr != MDK_ERROR_OK) {
+            mdk_string_delete(&tmp_string, errorPtr);
+            goto ret;
+        }
 
         if (it) {
             prev = it + strlen(separator);
         }
     } while (it);
-
+    
 ret:
-    return rs;
+    return list;
 }
 
-mdk_error mdk_string_append(mdk_string dst, const mdk_string src) {
-    return mdk_string_append_c_string(dst, src->c_string);
+void mdk_string_append(mdk_string dst, const mdk_string src, mdk_error* errorPtr) {
+    return mdk_string_append_c_string(dst, src->c_string, errorPtr);
 }
 
-mdk_error mdk_string_append_c_string(mdk_string dst, const char* src) {
-    mdk_error rs = MDK_ERROR_OK;
+void mdk_string_append_c_string(mdk_string dst, const char* src, mdk_error* errorPtr) {
     char* tmp_dst = NULL;
+
+    if (errorPtr) {
+        *errorPtr = MDK_ERROR_OK;
+    }
 
     tmp_dst = realloc(dst->c_string, strlen(dst->c_string) + strlen(src) + 1);
     if (!tmp_dst) {
-        rs = MDK_ERROR_MALLOC;
+        if (errorPtr) {
+            *errorPtr = MDK_ERROR_MALLOC;
+        }
         goto ret;
     }
 
@@ -181,5 +232,5 @@ mdk_error mdk_string_append_c_string(mdk_string dst, const char* src) {
     strcat(dst->c_string, src);
 
 ret:
-    return rs;
+    return;
 }

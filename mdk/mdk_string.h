@@ -11,15 +11,15 @@
 typedef struct mdk_internal_string* mdk_string;
 
 
-mdk_error mdk_string_new(mdk_string* stringPtr);
-mdk_error mdk_string_new_from_c_string(mdk_string* stringPtr, const char* c_string);
-mdk_error mdk_string_delete(mdk_string* stringPtr);
-mdk_error mdk_string_length(mdk_string string, size_t* length);
-mdk_error mdk_string_set(mdk_string string, const char* c_string);
-mdk_error mdk_string_get(mdk_string string, char** c_string);
-mdk_error mdk_string_split(mdk_string string, const char* separator, mdk_list list);
-mdk_error mdk_string_append(mdk_string dst, const mdk_string src);
-mdk_error mdk_string_append_c_string(mdk_string dst, const char* src);
+mdk_string mdk_string_new(mdk_error* errorPtr);
+mdk_string mdk_string_new_from_c_string(const char* c_string, mdk_error* errorPtr);
+void mdk_string_delete(mdk_string* stringPtr, mdk_error* errorPtr);
+size_t mdk_string_length(mdk_string string, mdk_error* errorPtr);
+void mdk_string_set(mdk_string string, const char* c_string, mdk_error* errorPtr);
+char* mdk_string_get(mdk_string string, mdk_error* errorPtr);
+mdk_list mdk_string_split(mdk_string string, const char* separator, mdk_error* errorPtr);
+void mdk_string_append(mdk_string dst, const mdk_string src, mdk_error* errorPtr);
+void mdk_string_append_c_string(mdk_string dst, const char* src, mdk_error* errorPtr);
 
 
 #endif

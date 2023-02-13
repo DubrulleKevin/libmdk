@@ -7,25 +7,30 @@ struct mdk_internal_list {
 };
 
 
-mdk_error mdk_list_new(mdk_list* listPtr) {
-    mdk_error rs = MDK_ERROR_OK;
+mdk_list mdk_list_new(mdk_error* errorPtr) {
+    if (errorPtr) {
+        *errorPtr = MDK_ERROR_OK;
+    }
+
     mdk_list list = malloc(sizeof(struct mdk_internal_list));
     if (!list) {
-        rs = MDK_ERROR_MALLOC;
+        if (errorPtr) {
+            *errorPtr = MDK_ERROR_MALLOC;
+        }
         goto ret;
     }
 
     list->elements = NULL;
     list->length = 0;
 
-    *listPtr = list;
-
 ret:
-    return rs;
+    return list;
 }
 
-mdk_error mdk_list_delete(mdk_list* listPtr) {
-    mdk_error rs = MDK_ERROR_OK;
+void mdk_list_delete(mdk_list* listPtr, mdk_error* errorPtr) {
+    if (errorPtr) {
+        *errorPtr = MDK_ERROR_OK;
+    }
 
     if (listPtr && *listPtr) {
         if ((*listPtr)->elements) {
@@ -35,18 +40,23 @@ mdk_error mdk_list_delete(mdk_list* listPtr) {
         *listPtr = NULL;
     }
     else {
-        rs = MDK_ERROR_INVALID_PTR;
+        if (errorPtr) {
+            *errorPtr = MDK_ERROR_INVALID_PTR;
+        }
     }
-
-    return rs;
 }
 
-mdk_error mdk_list_append(mdk_list list, void* element) {
-    mdk_error rs = MDK_ERROR_OK;
+void mdk_list_append(mdk_list list, void* element, mdk_error* errorPtr) {
     void* working_elements;
+    
+    if (errorPtr) {
+        *errorPtr = MDK_ERROR_OK;
+    }
 
     if (!list) {
-        rs = MDK_ERROR_INVALID_PTR;
+        if (errorPtr) {
+            *errorPtr = MDK_ERROR_INVALID_PTR;
+        }
         goto ret;
     }
 
@@ -54,7 +64,9 @@ mdk_error mdk_list_append(mdk_list list, void* element) {
         working_elements = realloc(list->elements, (list->length + MDK_CONFIG_ALLOCATION_CHUNK) * sizeof(void*));
         
         if (!working_elements) {
-            rs = MDK_ERROR_MALLOC;
+            if (errorPtr) {
+                *errorPtr = MDK_ERROR_MALLOC;
+            }
             goto ret;
         }
         
@@ -65,21 +77,28 @@ mdk_error mdk_list_append(mdk_list list, void* element) {
     list->length += 1;
 
 ret:
-    return rs;
+    return;
 }
 
-mdk_error mdk_list_remove(mdk_list list, const size_t index) {
-    mdk_error rs = MDK_ERROR_OK;
+void mdk_list_remove(mdk_list list, const size_t index, mdk_error* errorPtr) {
     size_t i;
     void* working_elements;
 
+    if (errorPtr) {
+        *errorPtr = MDK_ERROR_OK;
+    }
+
     if (!list) {
-        rs = MDK_ERROR_INVALID_PTR;
+        if (errorPtr) {
+            *errorPtr = MDK_ERROR_INVALID_PTR;
+        }
         goto ret;
     }
 
     if (index >= list->length) {
-        rs = MDK_ERROR_INDEX;
+        if (errorPtr) {
+            *errorPtr = MDK_ERROR_INDEX;
+        }
         goto ret;
     }
 
@@ -93,7 +112,9 @@ mdk_error mdk_list_remove(mdk_list list, const size_t index) {
         working_elements = realloc(list->elements, list->length * sizeof(void*));
         
         if (!working_elements) {
-            rs = MDK_ERROR_MALLOC;
+            if (errorPtr) {
+                *errorPtr = MDK_ERROR_MALLOC;
+            }
             goto ret;
         }
         
@@ -101,38 +122,52 @@ mdk_error mdk_list_remove(mdk_list list, const size_t index) {
     }
 
 ret:
-    return rs;
+    return;
 }
 
-mdk_error mdk_list_get(mdk_list list, const size_t index, void** elementPtr) {
-    mdk_error rs = MDK_ERROR_OK;
+void* mdk_list_get(mdk_list list, const size_t index, mdk_error* errorPtr) {
+    void* element = NULL;
+    
+    if (errorPtr) {
+        *errorPtr = MDK_ERROR_OK;
+    }
 
     if (!list) {
-        rs = MDK_ERROR_INVALID_PTR;
+        if (errorPtr) {
+            *errorPtr = MDK_ERROR_INVALID_PTR;
+        }
         goto ret;
     }
 
     if (index >= list->length) {
-        rs = MDK_ERROR_INDEX;
+        if (errorPtr) {
+            *errorPtr = MDK_ERROR_INDEX;
+        }
         goto ret;
     }
 
-    *elementPtr = list->elements[index];
+    element = list->elements[index];
 
 ret:
-    return rs;
+    return element;
 }
 
-mdk_error mdk_list_length(mdk_list list, size_t* lengthPtr) {
-    mdk_error rs = MDK_ERROR_OK;
+size_t mdk_list_length(mdk_list list, mdk_error* errorPtr) {
+    size_t length = -1;
+    
+    if (errorPtr) {
+        *errorPtr = MDK_ERROR_OK;
+    }
 
     if (!list) {
-        rs = MDK_ERROR_INVALID_PTR;
+        if (errorPtr) {
+            *errorPtr = MDK_ERROR_INVALID_PTR;
+        }
         goto ret;
     }
 
-    *lengthPtr = list->length;
+    length = list->length;
 
 ret:
-    return rs;
+    return length;
 }
