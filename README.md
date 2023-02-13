@@ -1,2 +1,2 @@
-# mdk
+# libmdk
 C89 library providing helper structures and functions.
