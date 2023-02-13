@@ -230,7 +230,7 @@ void mdk_string_append(mdk_string dst, const mdk_string src, mdk_error* errorPtr
 
 void mdk_string_append_c_string(mdk_string dst, const char* src, mdk_error* errorPtr) {
     char* tmp_dst = NULL;
-    size_t src_string_length, dst_string_length, sum_string_length, max_size_t = mdk_utils_size_t_max();
+    size_t src_string_length, dst_string_length, sum_string_length;
 
     if (errorPtr) {
         *errorPtr = MDK_ERROR_OK;
@@ -239,7 +239,7 @@ void mdk_string_append_c_string(mdk_string dst, const char* src, mdk_error* erro
     src_string_length = strlen(src);
     dst_string_length = strlen(dst->c_string);
     sum_string_length = src_string_length + dst_string_length;
-    if (src_string_length == max_size_t || dst_string_length == max_size_t || sum_string_length == max_size_t) {
+    if (sum_string_length < dst_string_length) {
         if (errorPtr) {
             *errorPtr = MDK_ERROR_LIMITS;
         }
