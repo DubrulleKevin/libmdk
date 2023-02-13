@@ -4,8 +4,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "mdk_config.h"
 
-typedef enum {
+
+LIBMDK_API typedef enum {
 	MDK_ERROR_OK,
 	MDK_ERROR_INVALID_PTR,
 	MDK_ERROR_MALLOC,
@@ -14,7 +16,7 @@ typedef enum {
 } mdk_error;
 
 
-const char* mdk_error_to_string(const mdk_error error);
+LIBMDK_API const char* mdk_error_to_string(const mdk_error error);
 
 
 #endif

@@ -209,7 +209,7 @@ ret:
 }
 
 void mdk_string_append(mdk_string dst, const mdk_string src, mdk_error* errorPtr) {
-    return mdk_string_append_c_string(dst, src->c_string, errorPtr);
+    mdk_string_append_c_string(dst, src->c_string, errorPtr);
 }
 
 void mdk_string_append_c_string(mdk_string dst, const char* src, mdk_error* errorPtr) {
