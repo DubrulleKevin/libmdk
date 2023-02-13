@@ -14,6 +14,9 @@ const char* mdk_error_to_string(const mdk_error error) {
 	case MDK_ERROR_MALLOC:
 		str = "Memory allocation error occured (typically, malloc or realloc failed)";
 		break;
+	case MDK_ERROR_LIMITS:
+		str = "Variable limit value reached";
+		break;
 	case MDK_ERROR_INDEX:
 		str = "Invalid index";
 		break;

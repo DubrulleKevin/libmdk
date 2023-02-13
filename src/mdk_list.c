@@ -49,7 +49,8 @@ void mdk_list_delete(mdk_list* listPtr, mdk_error* errorPtr) {
 }
 
 void mdk_list_append(mdk_list list, void* element, mdk_error* errorPtr) {
-    void* working_elements;
+    void** working_elements;
+    size_t current_allocated_size, future_allocated_size;
     
     if (errorPtr) {
         *errorPtr = MDK_ERROR_OK;
@@ -63,7 +64,16 @@ void mdk_list_append(mdk_list list, void* element, mdk_error* errorPtr) {
     }
 
     if (list->length % MDK_CONFIG_ALLOCATION_CHUNK == 0) {
-        working_elements = realloc(list->elements, (list->length + MDK_CONFIG_ALLOCATION_CHUNK) * sizeof(void*));
+        current_allocated_size = list->length * sizeof(void*);
+        future_allocated_size = (current_allocated_size + MDK_CONFIG_ALLOCATION_CHUNK) * sizeof(void*);
+        if (future_allocated_size < current_allocated_size) {
+            if (errorPtr) {
+                *errorPtr = MDK_ERROR_LIMITS;
+            }
+            goto ret;
+        }
+
+        working_elements = (void**)realloc(list->elements, future_allocated_size);
         
         if (!working_elements) {
             if (errorPtr) {
@@ -83,8 +93,8 @@ ret:
 }
 
 void mdk_list_remove(mdk_list list, const size_t index, mdk_error* errorPtr) {
-    size_t i;
-    void* working_elements;
+    size_t i, new_size;
+    void** working_elements;
 
     if (errorPtr) {
         *errorPtr = MDK_ERROR_OK;
@@ -111,7 +121,8 @@ void mdk_list_remove(mdk_list list, const size_t index, mdk_error* errorPtr) {
     list->length -= 1;
 
     if (list->length != 0 && list->length % MDK_CONFIG_ALLOCATION_CHUNK == 0) {
-        working_elements = realloc(list->elements, list->length * sizeof(void*));
+        new_size = list->length * sizeof(void*);
+        working_elements = (void**)realloc(list->elements, new_size);
         
         if (!working_elements) {
             if (errorPtr) {

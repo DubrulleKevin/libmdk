@@ -88,6 +88,7 @@ ret:
 
 void mdk_string_set(mdk_string string, const char* c_string, mdk_error* errorPtr) {
     char* realloc_c_string;
+    size_t string_length;
 
     if (errorPtr) {
         *errorPtr = MDK_ERROR_OK;
@@ -100,7 +101,17 @@ void mdk_string_set(mdk_string string, const char* c_string, mdk_error* errorPtr
         goto ret;
     }
 
-    realloc_c_string = realloc(string->c_string, strlen(c_string) + 1);
+    string_length = strlen(c_string);
+    if (string_length == mdk_utils_size_t_max()) {
+        if (errorPtr) {
+            *errorPtr = MDK_ERROR_LIMITS;
+        }
+        goto ret;
+    }
+
+    string_length++;
+
+    realloc_c_string = (char*)realloc(string->c_string, string_length);
     if (!realloc_c_string) {
         if (errorPtr) {
             *errorPtr = MDK_ERROR_MALLOC;
@@ -178,15 +189,17 @@ mdk_list mdk_string_split(mdk_string string, const char* separator, mdk_error* e
         else {
             break;
         }
+
+        diff++;
         
-        tmp = malloc(diff + 1);
+        tmp = (char*)malloc(diff);
         if (!tmp) {
             if (errorPtr) {
                 *errorPtr = MDK_ERROR_MALLOC;
             }
             goto ret;
         }
-        for (i = 0; i < diff; i++) {
+        for (i = 0; i < diff - 1; i++) {
             tmp[i] = prev[i];
         }
         tmp[i] = '\0';
@@ -217,12 +230,25 @@ void mdk_string_append(mdk_string dst, const mdk_string src, mdk_error* errorPtr
 
 void mdk_string_append_c_string(mdk_string dst, const char* src, mdk_error* errorPtr) {
     char* tmp_dst = NULL;
+    size_t src_string_length, dst_string_length, sum_string_length, max_size_t = mdk_utils_size_t_max();
 
     if (errorPtr) {
         *errorPtr = MDK_ERROR_OK;
     }
 
-    tmp_dst = realloc(dst->c_string, strlen(dst->c_string) + strlen(src) + 1);
+    src_string_length = strlen(src);
+    dst_string_length = strlen(dst->c_string);
+    sum_string_length = src_string_length + dst_string_length;
+    if (src_string_length == max_size_t || dst_string_length == max_size_t || sum_string_length == max_size_t) {
+        if (errorPtr) {
+            *errorPtr = MDK_ERROR_LIMITS;
+        }
+        goto ret;
+    }
+
+    sum_string_length++;
+
+    tmp_dst = (char*)realloc(dst->c_string, sum_string_length);
     if (!tmp_dst) {
         if (errorPtr) {
             *errorPtr = MDK_ERROR_MALLOC;

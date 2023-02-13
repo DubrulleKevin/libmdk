@@ -1,10 +1,15 @@
 #ifndef MDK_LIST_HEADER
 #define MDK_LIST_HEADER
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdlib.h>
 
 #include "mdk_config.h"
 #include "mdk_error.h"
+#include "mdk_utils.h"
 
 
 typedef struct mdk_internal_list* mdk_list;
@@ -17,5 +22,9 @@ LIBMDK_API void mdk_list_remove(mdk_list list, const size_t index, mdk_error* er
 LIBMDK_API void* mdk_list_get(mdk_list list, const size_t index, mdk_error* errorPtr);
 LIBMDK_API size_t mdk_list_length(mdk_list list, mdk_error* errorPtr);
 
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
