@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.9)
 project(libmdk VERSION 0.0.1 DESCRIPTION "C89 library providing helper structures and functions.")
 
 set (CMAKE_C_STANDARD 90)
+set (CMAKE_C_EXTENSIONS OFF)
 
 if(CMAKE_BUILD_TYPE STREQUAL "")
   set(CMAKE_BUILD_TYPE Release)
@@ -45,6 +46,6 @@ install(TARGETS ${LIBRARY_NAME}
     DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
 )
 
-install(TARGETS ${EXAMPLE_DEMO_NAME}
+install(TARGETS ${TEST_NAME}
     DESTINATION ${CMAKE_INSTALL_PREFIX}/bin
 )
