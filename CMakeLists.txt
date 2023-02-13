@@ -27,18 +27,18 @@ file(
 
 file(
 		GLOB_RECURSE
-        test_files
+        tests_files
         tests/tests.c
 		include/*
 )
 
 # Define sources and executable
 set(LIBRARY_NAME "mdk")
-set(TEST_NAME "test")
+set(TESTS_NAME "tests")
 add_definitions(-DLIBMDK_EXPORT)
 add_library(${LIBRARY_NAME} SHARED ${source_files})
-add_executable(${TEST_NAME} ${test_files})
-target_link_libraries(${TEST_NAME} ${LIBRARY_NAME})
+add_executable(${TESTS_NAME} ${tests_files})
+target_link_libraries(${TESTS_NAME} ${LIBRARY_NAME})
 set_target_properties(${LIBRARY_NAME} PROPERTIES VERSION ${PROJECT_VERSION})
 set_target_properties(${LIBRARY_NAME} PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR})
 
@@ -46,6 +46,6 @@ install(TARGETS ${LIBRARY_NAME}
     DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
 )
 
-install(TARGETS ${TEST_NAME}
+install(TARGETS ${TESTS_NAME}
     DESTINATION ${CMAKE_INSTALL_PREFIX}/bin
 )
