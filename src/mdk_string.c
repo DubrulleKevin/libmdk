@@ -310,6 +310,8 @@ LIBMDK_API void mdk_string_delete_list_of_strings(mdk_list* listPtr, mdk_error* 
         }
     }
 
+    mdk_list_delete(listPtr, errorPtr);
+
 ret:
     return;
 }
