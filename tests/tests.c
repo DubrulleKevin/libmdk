@@ -75,9 +75,9 @@ void list_tests(void) {
 
 void string_tests(void) {
     mdk_error error;
-    mdk_string string, string2, tmp_string;
+    mdk_string string, string2;
     mdk_list list;
-    size_t length, i;
+    size_t length;
     const char* input_string = "Hello World! I am libmdk.";
     char* result;
 
@@ -96,8 +96,10 @@ void string_tests(void) {
     string2 = mdk_string_new_from_c_string(input_string, &error);
     assert(error == MDK_ERROR_OK);
     assert(string2);
+    assert(mdk_string_compare(string, string2, &error));
     mdk_string_append(string, string2, &error);
     assert(mdk_string_length(string, &error) == 2 * strlen(input_string));
+    assert(!mdk_string_compare(string, string2, &error));
     mdk_string_delete(&string2, &error);
     assert(!string2);
     assert(error == MDK_ERROR_OK);
@@ -117,11 +119,7 @@ void string_tests(void) {
     assert(!strcmp((char*)mdk_string_get((mdk_string)mdk_list_get(list, 6, &error), &error), "I"));
     assert(!strcmp((char*)mdk_string_get((mdk_string)mdk_list_get(list, 7, &error), &error), "am"));
     assert(!strcmp((char*)mdk_string_get((mdk_string)mdk_list_get(list, 8, &error), &error), "libmdk."));
-    for (i = 0; i < mdk_list_length(list, &error); i++) {
-        tmp_string = (mdk_string)mdk_list_get(list, i, &error);
-        mdk_string_delete(&tmp_string, &error);
-    }
-    mdk_list_delete(&list, &error);
+    mdk_string_delete_list_of_strings(&list, &error);
     assert(error == MDK_ERROR_OK);
 
     mdk_string_delete(&string, &error);

@@ -25,6 +25,8 @@ LIBMDK_API char* mdk_string_get(mdk_string string, mdk_error* errorPtr);
 LIBMDK_API void mdk_string_split(mdk_list list, mdk_string string, const char* separator, mdk_error* errorPtr);
 LIBMDK_API void mdk_string_append(mdk_string dst, const mdk_string src, mdk_error* errorPtr);
 LIBMDK_API void mdk_string_append_c_string(mdk_string dst, const char* src, mdk_error* errorPtr);
+LIBMDK_API int mdk_string_compare(const mdk_string string1, const mdk_string string2, mdk_error* errorPtr);
+LIBMDK_API void mdk_string_delete_list_of_strings(mdk_list* listPtr, mdk_error* errorPtr);
 
 
 #ifdef __cplusplus

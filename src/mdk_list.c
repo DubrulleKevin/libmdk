@@ -41,10 +41,8 @@ void mdk_list_delete(mdk_list* listPtr, mdk_error* errorPtr) {
         free(*listPtr);
         *listPtr = NULL;
     }
-    else {
-        if (errorPtr) {
-            *errorPtr = MDK_ERROR_INVALID_PTR;
-        }
+    else if (errorPtr) {
+        *errorPtr = MDK_ERROR_INVALID_PTR;
     }
 }
 

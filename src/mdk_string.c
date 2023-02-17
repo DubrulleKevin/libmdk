@@ -257,3 +257,59 @@ void mdk_string_append_c_string(mdk_string dst, const char* src, mdk_error* erro
 ret:
     return;
 }
+
+int mdk_string_compare(const mdk_string string1, const mdk_string string2, mdk_error* errorPtr) {
+    int result = 0;
+    
+    if (errorPtr) {
+        *errorPtr = MDK_ERROR_OK;
+    }
+
+    if (!string2 || !string2) {
+        if (errorPtr) {
+            *errorPtr = MDK_ERROR_INVALID_PTR;
+        }
+        goto ret;
+    }
+
+    result = !strcmp(string1->c_string, string2->c_string);
+
+ret:
+    return result;
+}
+
+LIBMDK_API void mdk_string_delete_list_of_strings(mdk_list* listPtr, mdk_error* errorPtr) {
+    size_t i, list_length;
+    mdk_string string;
+
+    if (errorPtr) {
+        *errorPtr = MDK_ERROR_OK;
+    }
+
+    if (!listPtr || !*listPtr) {
+        if (errorPtr) {
+            *errorPtr = MDK_ERROR_INVALID_PTR;
+        }
+        goto ret;
+    }
+
+    list_length = mdk_list_length(*listPtr, errorPtr);
+    if (errorPtr && *errorPtr != MDK_ERROR_OK) {
+        goto ret;
+    }
+
+    for (i = 0; i < list_length; i++) {
+        string = (mdk_string)mdk_list_get(*listPtr, i, errorPtr);
+        if (errorPtr && *errorPtr != MDK_ERROR_OK) {
+            goto ret;
+        }
+
+        mdk_string_delete(&string, errorPtr);
+        if (errorPtr && *errorPtr != MDK_ERROR_OK) {
+            goto ret;
+        }
+    }
+
+ret:
+    return;
+}
