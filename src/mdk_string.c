@@ -147,9 +147,8 @@ ret:
     return c_string;
 }
 
-mdk_list mdk_string_split(mdk_string string, const char* separator, mdk_error* errorPtr) {
+void mdk_string_split(mdk_list list, mdk_string string, const char* separator, mdk_error* errorPtr) {
     mdk_string tmp_string;
-    mdk_list list = NULL;
     char *it, *prev, *tmp;
     size_t diff, i;
 
@@ -157,7 +156,7 @@ mdk_list mdk_string_split(mdk_string string, const char* separator, mdk_error* e
         *errorPtr = MDK_ERROR_OK;
     }
 
-    if (!string || !separator) {
+    if (!string || !separator || !list ) {
         if (errorPtr) {
             *errorPtr = MDK_ERROR_INVALID_PTR;
         }
@@ -172,11 +171,6 @@ mdk_list mdk_string_split(mdk_string string, const char* separator, mdk_error* e
     }
     
     prev = string->c_string;
-
-    list = mdk_list_new(errorPtr);
-    if (errorPtr && *errorPtr != MDK_ERROR_OK) {
-        goto ret;
-    }
 
     do {
         it = strstr(prev, separator);
@@ -221,7 +215,7 @@ mdk_list mdk_string_split(mdk_string string, const char* separator, mdk_error* e
     } while (it);
     
 ret:
-    return list;
+    return;
 }
 
 void mdk_string_append(mdk_string dst, const mdk_string src, mdk_error* errorPtr) {

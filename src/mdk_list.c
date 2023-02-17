@@ -35,9 +35,6 @@ void mdk_list_delete(mdk_list* listPtr, mdk_error* errorPtr) {
     }
 
     if (listPtr && *listPtr) {
-        if ((*listPtr)->elements) {
-            free((*listPtr)->elements);
-        }
         free(*listPtr);
         *listPtr = NULL;
     }
