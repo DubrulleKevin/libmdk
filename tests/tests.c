@@ -18,10 +18,6 @@ int main(void) {
     list_tests();
     string_tests();
 
-#ifdef _WIN32
-    system("PAUSE");
-#endif
-
     return EXIT_SUCCESS;
 }
 
