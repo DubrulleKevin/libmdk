@@ -10,6 +10,9 @@ extern "C" {
 #include "mdk_config.h"
 
 
+#define mdk_e_ts mdk_error_to_string
+
+
 typedef enum {
 	MDK_ERROR_OK,
 	MDK_ERROR_INVALID_PTR,

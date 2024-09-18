@@ -13,6 +13,19 @@ extern "C" {
 #include "mdk_config.h"
 
 
+#define mdk_s_n mdk_string_new
+#define mdk_s_nc mdk_string_new_from_c_string
+#define mdk_s_d mdk_string_delete
+#define mdk_s_l mdk_string_length
+#define mdk_s_s mdk_string_set
+#define mdk_s_g mdk_string_get
+#define mdk_s_sp mdk_string_split
+#define mdk_s_a mdk_string_append
+#define mdk_s_ac mdk_string_append_c_string
+#define mdk_s_co mdk_string_compare
+#define mdk_s_dl mdk_string_delete_list_of_strings
+
+
 typedef struct mdk_internal_string* mdk_string;
 
 

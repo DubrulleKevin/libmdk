@@ -7,5 +7,5 @@ size_t mdk_utils_size_t_max(void) {
 		translate to returning the plateform maximalle value for size_t.
 	*/
 
-	return -1;
+	return (size_t)-1;
 }

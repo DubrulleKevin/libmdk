@@ -12,6 +12,14 @@ extern "C" {
 #include "mdk_utils.h"
 
 
+#define mdk_l_n mdk_list_new
+#define mdk_l_d mdk_list_delete
+#define mdk_l_a mdk_list_append
+#define mdk_l_r mdk_list_remove
+#define mdk_l_g mdk_list_get
+#define mdk_l_l mdk_list_length
+
+
 typedef struct mdk_internal_list* mdk_list;
 
 

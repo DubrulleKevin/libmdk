@@ -186,7 +186,7 @@ void mdk_string_split(mdk_list list, mdk_string string, const char* separator, m
 
         diff++;
         
-        tmp = (char*)malloc(diff);
+        tmp = (char*)malloc(diff + 1);
         if (!tmp) {
             if (errorPtr) {
                 *errorPtr = MDK_ERROR_MALLOC;
@@ -265,7 +265,7 @@ int mdk_string_compare(const mdk_string string1, const mdk_string string2, mdk_e
         *errorPtr = MDK_ERROR_OK;
     }
 
-    if (!string2 || !string2) {
+    if (!string2) {
         if (errorPtr) {
             *errorPtr = MDK_ERROR_INVALID_PTR;
         }

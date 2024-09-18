@@ -27,44 +27,44 @@ void list_tests(void) {
     int test_element_1 = 42, test_element_2 = 43, *result = NULL;
     size_t length;
 
-    list = mdk_list_new(&error);
+    list = mdk_l_n(&error);
     assert(list);
     assert(error == MDK_ERROR_OK);
 
-    mdk_list_append(list, &test_element_1, &error);
+    mdk_l_a(list, &test_element_1, &error);
     assert(error == MDK_ERROR_OK);
 
-    mdk_list_append(list, &test_element_2, &error);
+    mdk_l_a(list, &test_element_2, &error);
     assert(error == MDK_ERROR_OK);
 
-    result = (int*)mdk_list_get(list, 0, &error);
+    result = (int*)mdk_l_g(list, 0, &error);
     assert(error == MDK_ERROR_OK);
     assert(*result == 42);
 
-    result = (int*)mdk_list_get(list, 1, &error);
+    result = (int*)mdk_l_g(list, 1, &error);
     assert(error == MDK_ERROR_OK);
     assert(*result == 43);
 
-    length = mdk_list_length(list, &error);
+    length = mdk_l_l(list, &error);
     assert(error == MDK_ERROR_OK);
     assert(length == 2);
 
-    mdk_list_remove(list, 0, &error);
+    mdk_l_r(list, 0, &error);
     assert(error == MDK_ERROR_OK);
 
-    length = mdk_list_length(list, &error);
+    length = mdk_l_l(list, &error);
     assert(error == MDK_ERROR_OK);
     assert(length == 1);
 
-    result = (int*)mdk_list_get(list, 0, &error);
+    result = (int*)mdk_l_g(list, 0, &error);
     assert(error == MDK_ERROR_OK);
     assert(*result == 43);
 
-    result = (int*)mdk_list_get(list, 1, &error);
+    result = (int*)mdk_l_g(list, 1, &error);
     assert(error == MDK_ERROR_INDEX);
     assert(result == NULL);
 
-    mdk_list_delete(&list, &error);
+    mdk_l_d(&list, &error);
     assert(!list);
     assert(error == MDK_ERROR_OK);
 }
@@ -77,48 +77,49 @@ void string_tests(void) {
     const char* input_string = "Hello World! I am libmdk.";
     char* result;
 
-    string = mdk_string_new_from_c_string(input_string, &error);
+    string = mdk_s_nc(input_string, &error);
+    assert(!error);
     assert(error == MDK_ERROR_OK);
     assert(string);
 
-    result = mdk_string_get(string, &error);
+    result = mdk_s_g(string, &error);
     assert(error == MDK_ERROR_OK);
     assert(!strcmp(input_string, result));
 
-    length = mdk_string_length(string, &error);
+    length = mdk_s_l(string, &error);
     assert(error == MDK_ERROR_OK);
     assert(length == strlen(input_string));
 
-    string2 = mdk_string_new_from_c_string(input_string, &error);
+    string2 = mdk_s_nc(input_string, &error);
     assert(error == MDK_ERROR_OK);
     assert(string2);
-    assert(mdk_string_compare(string, string2, &error));
-    mdk_string_append(string, string2, &error);
-    assert(mdk_string_length(string, &error) == 2 * strlen(input_string));
-    assert(!mdk_string_compare(string, string2, &error));
-    mdk_string_delete(&string2, &error);
+    assert(mdk_s_co(string, string2, &error));
+    mdk_s_a(string, string2, &error);
+    assert(mdk_s_l(string, &error) == 2 * strlen(input_string));
+    assert(!mdk_s_co(string, string2, &error));
+    mdk_s_d(&string2, &error);
     assert(!string2);
     assert(error == MDK_ERROR_OK);
 
-    list = mdk_list_new(&error);
+    list = mdk_l_n(&error);
     assert(error == MDK_ERROR_OK);
     assert(list);
-    mdk_string_split(list, string, " ", &error);
+    mdk_s_sp(list, string, " ", &error);
     assert(error == MDK_ERROR_OK);
-    assert(mdk_list_length(list, &error) == 9);
-    assert(!strcmp((char*)mdk_string_get((mdk_string)mdk_list_get(list, 0, &error), &error), "Hello"));
-    assert(!strcmp((char*)mdk_string_get((mdk_string)mdk_list_get(list, 1, &error), &error), "World!"));
-    assert(!strcmp((char*)mdk_string_get((mdk_string)mdk_list_get(list, 2, &error), &error), "I"));
-    assert(!strcmp((char*)mdk_string_get((mdk_string)mdk_list_get(list, 3, &error), &error), "am"));
-    assert(!strcmp((char*)mdk_string_get((mdk_string)mdk_list_get(list, 4, &error), &error), "libmdk.Hello"));
-    assert(!strcmp((char*)mdk_string_get((mdk_string)mdk_list_get(list, 5, &error), &error), "World!"));
-    assert(!strcmp((char*)mdk_string_get((mdk_string)mdk_list_get(list, 6, &error), &error), "I"));
-    assert(!strcmp((char*)mdk_string_get((mdk_string)mdk_list_get(list, 7, &error), &error), "am"));
-    assert(!strcmp((char*)mdk_string_get((mdk_string)mdk_list_get(list, 8, &error), &error), "libmdk."));
-    mdk_string_delete_list_of_strings(&list, &error);
+    assert(mdk_l_l(list, &error) == 9);
+    assert(!strcmp((char*)mdk_s_g((mdk_string)mdk_l_g(list, 0, &error), &error), "Hello"));
+    assert(!strcmp((char*)mdk_s_g((mdk_string)mdk_l_g(list, 1, &error), &error), "World!"));
+    assert(!strcmp((char*)mdk_s_g((mdk_string)mdk_l_g(list, 2, &error), &error), "I"));
+    assert(!strcmp((char*)mdk_s_g((mdk_string)mdk_l_g(list, 3, &error), &error), "am"));
+    assert(!strcmp((char*)mdk_s_g((mdk_string)mdk_l_g(list, 4, &error), &error), "libmdk.Hello"));
+    assert(!strcmp((char*)mdk_s_g((mdk_string)mdk_l_g(list, 5, &error), &error), "World!"));
+    assert(!strcmp((char*)mdk_s_g((mdk_string)mdk_l_g(list, 6, &error), &error), "I"));
+    assert(!strcmp((char*)mdk_s_g((mdk_string)mdk_l_g(list, 7, &error), &error), "am"));
+    assert(!strcmp((char*)mdk_s_g((mdk_string)mdk_l_g(list, 8, &error), &error), "libmdk."));
+    mdk_s_dl(&list, &error);
     assert(error == MDK_ERROR_OK);
 
-    mdk_string_delete(&string, &error);
+    mdk_s_d(&string, &error);
     assert(!string);
     assert(error == MDK_ERROR_OK);
 }
